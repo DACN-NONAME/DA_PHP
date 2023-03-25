@@ -1,6 +1,3 @@
-<?php
-include './header.php'
-?>
 <!-- ==========Banner-Section========== -->
 <section class="banner-section">
     <div class="banner-bg bg_img bg-fixed" data-background="./assets/images/banner/banner01.jpg"></div>
@@ -25,7 +22,7 @@ include './header.php'
             <div class="row align-items-center mb--20">
                 <div class="col-lg-6 mb-20">
                     <div class="search-ticket-header">
-                        <h6 class="category">welcome to Boleto </h6>
+                        <h6 class="category">welcome to NoName</h6>
                         <!--<h3 class="title">what are you looking for</h3>-->
                     </div>
                 </div>
@@ -42,59 +39,17 @@ include './header.php'
             </div>
             <div class="tab-area">
                 <div class="tab-item active">
-                    <form class="ticket-search-form">
+                    <form class="ticket-search-form" action="films.html" method="GET">
                         <div class="form-group large">
-                            <input type="text" placeholder="Tìm phim">
+                            <input type="text" placeholder="Tìm phim" name="keyword">
                             <button type="submit"><i class="fas fa-search"></i></button>
-                        </div>
-                        <div class="form-group">
-                            <div class="thumb">
-                                <img src="./assets/images/ticket/city.png" alt="ticket">
-                            </div>
-                            <span class="type">city</span>
-                            <select class="select-bar">
-                                <option value="london">London</option>
-                                <option value="dhaka">dhaka</option>
-                                <option value="rosario">rosario</option>
-                                <option value="madrid">madrid</option>
-                                <option value="koltaka">kolkata</option>
-                                <option value="rome">rome</option>
-                                <option value="khoksa">khoksa</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="thumb">
-                                <img src="./assets/images/ticket/date.png" alt="ticket">
-                            </div>
-                            <span class="type">date</span>
-                            <select class="select-bar">
-                                <option value="26-12-19">23/10/2020</option>
-                                <option value="26-12-19">24/10/2020</option>
-                                <option value="26-12-19">25/10/2020</option>
-                                <option value="26-12-19">26/10/2020</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="thumb">
-                                <img src="./assets/images/ticket/cinema.png" alt="ticket">
-                            </div>
-                            <span class="type">cinema</span>
-                            <select class="select-bar">
-                                <option value="Awaken">Awaken</option>
-                                <option value="dhaka">dhaka</option>
-                                <option value="rosario">rosario</option>
-                                <option value="madrid">madrid</option>
-                                <option value="koltaka">kolkata</option>
-                                <option value="rome">rome</option>
-                                <option value="khoksa">khoksa</option>
-                            </select>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</section>    
+</section>
 <!-- ==========Ticket-Search========== -->
 
 <!-- ==========Movie-Main-Section========== -->
@@ -129,45 +84,14 @@ include './header.php'
                 <div class="widget-1 widget-banner">
                     <div class="widget-1-body">
                         <a href="#0">
-                            <img src="./assets/images/sidebar/banner/banner01.jpg" alt="banner">
+                            <img src="./assets/images/sidebar/banner/banner01.jpg" alt="banner" />
                         </a>
-                    </div>
-                </div>
-                <div class="widget-1 widget-trending-search">
-                    <h3 class="title">Trending Searches</h3>
-                    <div class="widget-1-body">
-                        <ul>
-                            <li>
-                                <h6 class="sub-title">
-                                    <a href="#0">mars</a>
-                                </h6>
-                                <p>Movies</p>
-                            </li>
-                            <li>
-                                <h6 class="sub-title">
-                                    <a href="#0">alone</a>
-                                </h6>
-                                <p>Movies</p>
-                            </li>
-                            <li>
-                                <h6 class="sub-title">
-                                    <a href="#0">music event</a>
-                                </h6>
-                                <p>event</p>
-                            </li>
-                            <li>
-                                <h6 class="sub-title">
-                                    <a href="#0">NBA Games 2020</a>
-                                </h6>
-                                <p>Sports</p>
-                            </li>
-                        </ul>
                     </div>
                 </div>
                 <div class="widget-1 widget-banner">
                     <div class="widget-1-body">
                         <a href="#0">
-                            <img src="./assets/images/sidebar/banner/banner02.jpg" alt="banner">
+                            <img src="./assets/images/sidebar/banner/banner03.jpg" alt="banner" />
                         </a>
                     </div>
                 </div>
@@ -176,33 +100,36 @@ include './header.php'
                 <div class="article-section padding-bottom">
                     <div class="section-header-1">
                         <h2 class="title">Phim</h2>
-                        <a class="view-all" href="./films">Xem tất cả</a>
+                        <a class="view-all" href="films.html">Xem tất cả</a>
                     </div>
                     <div class="row mb-30-none justify-content-center">
-                        <c:forEach items="${films}" var="film">
+                        <?php
+                        $film = new Film();
+                        foreach ($film->GetFilms() as $k => $v) {
+                        ?>
                             <div class="col-sm-6 col-lg-4">
                                 <div class="movie-grid">
                                     <div class="movie-thumb c-thumb">
-                                        <a href="./film-detail?id=${film.id}">
-                                            <img src="${film.poster}" alt="movie" height="357px" width="255px" />
+                                        <a href="film-detail.html?id=<?php echo $v['id']; ?>">
+                                            <img src="<?php echo $v['poster']; ?>" alt="movie" height="357px" width="255px" />
                                         </a>
                                     </div>
                                     <div class="movie-content bg-one">
                                         <h5 class="title m-0" style="font-size: 18px;">
-                                            <!-- <a href="./film-detail?id=${film.id}">${film.name}</a> -->
+                                            <a href="film-detail.html?id=<?php echo $v['id']; ?>"><?php echo $v['name']; ?></a>
                                         </h5>
                                         <ul class="movie-rating-percent">
                                             <li>
                                                 <div class="thumb">
                                                     <img src="./assets/images/movie/tomato.png" alt="movie" />
                                                 </div>
-                                                <!-- <span class="content">${film.duration} phút</span> -->
+                                                <span class="content"><?php echo $v['duration']; ?> phút</span>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                        </c:forEach>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -210,6 +137,4 @@ include './header.php'
     </div>
 </section>
 <!-- ==========Movie-Main-Section========== -->
-<?php
-include './footer.php'
-?>
+<jsp:include page="footer.jsp" />

@@ -1,12 +1,60 @@
 <?php
-include './header.php'
+$schedule = new Schedule();
+$s = $schedule->GetSchedule(getGET('schedule_id'));
+$film = new Film();
+$f = $film->GetFilm($s['film_id']);
+
+// echo getUrl();
+if ($_POST) {
+    $booking = new Booking();
+    if (empty($_SESSION['user_id'])) header('Location: sign-in.html?url=' . getUrl());
+    else {
+        $res = $booking->Purchase($_SESSION['user_id'], $s['id'], getGET('seats'));
+        if (is_numeric($res)) {
+            // header('Location: history.html');
+            echo '<script>window.location.replace("history.html?id=' . $res . '");</script>';
+        } else {
+            // header('Location: msg.php?msg=' . urlencode($res));
+            echo '<script>window.location.href = "msg.php?msg=' . urlencode($res) . '";</script>';
+        }
+    }
+}
+
+$ticket = new Ticket();
+$t = $ticket->GetTickets();
+
+$seats = explode(',', getGET('seats'));
+$seats1 = $seats2 = $seats3 = array();
+$total_price = 0;
+foreach ($seats as $k => $v) {
+    $row = $col = '';
+    $bin = decbin(trim($v));
+    for ($i = 0; $i < strlen($bin); $i++) {
+        if ($i < 7) $row .= $bin[$i];
+        else $col .= $bin[$i];
+    }
+    // var_dump($bin, $row, $col);
+    // echo chr(bindec($row)) . bindec($col) . ',';
+    $row = chr(bindec($row));
+    $col = bindec($col);
+    if ('A' <= $row && $row <= 'D') {
+        $total_price += $t[0]['price'];
+        $seats1[] = $row . $col;
+    } else if ('E' <= $row && $row <= 'H') {
+        $total_price += $t[1]['price'];
+        $seats2[] = $row . $col;
+    } else if ($row == 'J') {
+        $total_price += $t[2]['price'];
+        $seats3[] = $row . $col . ' ' . $row . ($col + 1);
+    }
+}
 ?>
 <!-- ==========Banner-Section========== -->
 <section class="details-banner hero-area bg_img seat-plan-banner" data-background="./assets/images/banner/banner04.jpg">
     <div class="container">
         <div class="details-banner-wrapper">
             <div class="details-banner-content style-two">
-                <!-- <h3 class="title">${film.name}</h3> -->
+                <h3 class="title"><?php echo $f['name']; ?></h3>
                 <div class="tags">
                     <a href="#0">Cinema 2D</a>
                 </div>
@@ -16,132 +64,69 @@ include './header.php'
 </section>
 <!-- ==========Banner-Section========== -->
 
-<!-- ==========Page-Title========== -->
-<!--<section class="page-title bg-one">
-    <div class="container">
-        <div class="page-title-area">
-            <div class="item md-order-1">
-                <a href="movie-ticket-plan.html" class="custom-button back-button">
-                    <i class="flaticon-double-right-arrows-angles"></i>back
-                </a>
-            </div>
-            <div class="item date-item">
-                <span class="date">MON, SEP 09 2020</span>
-                <select class="select-bar">
-                    <option value="sc1">09:40</option>
-                    <option value="sc2">13:45</option>
-                    <option value="sc3">15:45</option>
-                    <option value="sc4">19:50</option>
-                </select>
-            </div>
-            <div class="item">
-                <h5 class="title">05:00</h5>
-                <p>Mins Left</p>
-            </div>
-        </div>
-    </div>
-</section>-->
-<!-- ==========Page-Title========== -->
-
 <!-- ==========Movie-Section========== -->
 <div class="movie-facility padding-bottom padding-top">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <!--                <div class="checkout-widget d-flex flex-wrap align-items-center justify-cotent-between">
-                                    <div class="title-area">
-                                        <h5 class="title">Already a Boleto  Member?</h5>
-                                        <p>Sign in to earn points and make booking easier!</p>
-                                    </div>
-                                    <a href="#0" class="sign-in-area">
-                                        <i class="fas fa-user"></i><span>Sign in</span>
-                                    </a>
-                                </div>-->
-                <div class="checkout-widget checkout-contact">
-                    <h5 class="title">Thông tin của bạn</h5>
-                    <form class="checkout-contact-form">
-                        <div class="form-group">
-                            <input type="text" placeholder="Full Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" placeholder="Enter your Mail">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" placeholder="Enter your Phone Number ">
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Continue" class="custom-button">
-                        </div>
-                    </form>
-                </div>
-                <!--                <div class="checkout-widget checkout-contact">
-                                    <h5 class="title">Promo Code </h5>
-                                    <form class="checkout-contact-form">
-                                        <div class="form-group">
-                                            <input type="text" placeholder="Please enter promo code">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="submit" value="Verify" class="custom-button">
-                                        </div>
-                                    </form>
-                                </div>-->
+
                 <div class="checkout-widget checkout-card mb-0">
                     <h5 class="title">Phương thức thanh toán</h5>
                     <ul class="payment-option">
-                        <li class="active">
-                            <a href="#0">
-                                <img src="./assets/images/payment/card.png" alt="payment">
+                        <li>
+                            <a>
+                                <img src="./assets/images/payment/card.png" alt="payment" />
                                 <span>Debit Card</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#0">
-                                <img src="./assets/images/payment/card.png" alt="payment">
+                        <li class="active">
+                            <a>
+                                <img src="./assets/images/payment/momo.png" alt="payment" />
                                 <span>MOMO</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#0">
-                                <img src="./assets/images/payment/paypal.png" alt="payment">
+                            <a>
+                                <img src="./assets/images/payment/paypal.png" alt="payment" />
                                 <span>paypal</span>
                             </a>
                         </li>
                     </ul>
-                    <h6 class="subtitle">Enter Your Card Details </h6>
+                    <!--<h6 class="subtitle">Enter Your Card Details </h6>-->
                     <form class="payment-card-form">
-                        <div class="form-group w-100">
-                            <label for="card1">Card Details</label>
-                            <input type="text" id="card1">
-                            <div class="right-icon">
-                                <i class="flaticon-lock"></i>
-                            </div>
-                        </div>
-                        <div class="form-group w-100">
-                            <label for="card2"> Name on the Card</label>
-                            <input type="text" id="card2">
-                        </div>
-                        <div class="form-group">
-                            <label for="card3">Expiration</label>
-                            <input type="text" id="card3" placeholder="MM/YY">
-                        </div>
-                        <div class="form-group">
-                            <label for="card4">CVV</label>
-                            <input type="text" id="card4" placeholder="CVV">
-                        </div>
+                        <!--                        <div class="form-group w-100">
+                                                    <label for="card1">Card Details</label>
+                                                    <input type="text" id="card1">
+                                                    <div class="right-icon">
+                                                        <i class="flaticon-lock"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group w-100">
+                                                    <label for="card2"> Name on the Card</label>
+                                                    <input type="text" id="card2">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="card3">Expiration</label>
+                                                    <input type="text" id="card3" placeholder="MM/YY">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="card4">CVV</label>
+                                                    <input type="text" id="card4" placeholder="CVV">
+                                                </div>-->
                         <div class="form-group check-group">
                             <input id="card5" type="checkbox" checked>
                             <label for="card5">
                                 <span class="title">QuickPay</span>
-                                <span class="info">Save this card information to my Boleto  account and make faster payments.</span>
+                                <span class="info">Lưu thông tin lại để thanh toán cho lần sau.</span>
                             </label>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" class="custom-button" value="make payment">
-                        </div>
+                        <!--                        <div class="form-group">
+                                                    <input type="submit" class="custom-button" value="make payment">
+                                                </div>-->
                     </form>
-                    <p class="notice">
-                        By Clicking "Make Payment" you agree to the <a href="#0">terms and conditions</a>
-                    </p>
+                    <!--                    <p class="notice">
+                                            By Clicking "Make Payment" you agree to the <a href="#0">terms and conditions</a>
+                                        </p>-->
                 </div>
             </div>
             <div class="col-lg-4">
@@ -149,70 +134,66 @@ include './header.php'
                     <h4 class="title">chi tiết</h4>
                     <ul>
                         <li>
-                            <!-- <h6 class="subtitle">${film.name}</h6> -->
+                            <h6 class="subtitle"><?php echo $f['name']; ?></h6>
                             <span class="info">Cinema-2d</span>
                         </li>
                         <li>
-                            <!-- <h6 class="subtitle"><span>${schedule.cinema_name}</span><span>${schedule.room_name}</span></h6>
-                            <div class="info"><span>${schedule.start_time}</span> <span>Rạp</span></div> -->
+                            <h6 class="subtitle"><span><?php echo $s['cinema_name']; ?></span><span><?php echo $s['room_name']; ?></span></h6>
+                            <div class="info"><span><?php echo $s['start_time']; ?></span> <span>Rạp</span></div>
                         </li>
                         <!--                        <li>
                                                     <h6 class="subtitle mb-0"><span>Tickets  Price</span><span>$150</span></h6>
                                                 </li>-->
                     </ul>
                     <ul class="side-shape">
-                        <!-- <c:if test="${not empty seats1}">
+                        <?php if (count($seats1)) { ?>
                             <li>
-                                <h6 class="subtitle"><span>Thường</span><span>x${seats1.size()}</span></h6>
-                                <span class="info"><span><c:forEach items="${seats1}" var="seat">${seat.seat}&nbsp;</c:forEach></span></span>
-                                </li>
-                        </c:if>
-                        <c:if test="${not empty seats2}">
+                                <h6 class="subtitle"><span>Thường</span><span>x<?php echo count($seats1); ?></span></h6>
+                                <span class="info"><span><?php echo implode(', ', $seats1); ?></span></span>
+                            </li>
+                        <?php } ?>
+                        <?php if (count($seats2)) { ?>
                             <li>
-                                <h6 class="subtitle"><span>VIP (Prime)</span><span>x${seats2.size()}</span></h6>
-                                <span class="info"><span><c:forEach items="${seats2}" var="seat">${seat.seat}&nbsp;</c:forEach></span></span>
-                                </li>
-                        </c:if>
-                        <c:if test="${not empty seats3}">
+                                <h6 class="subtitle"><span>VIP (Prime)</span><span>x<?php echo count($seats2); ?></span></h6>
+                                <span class="info"><span><?php echo implode(', ', $seats2); ?></span></span>
+                            </li>
+                        <?php } ?>
+                        <?php if (count($seats3)) { ?>
                             <li>
-                                <h6 class="subtitle"><span>Sweetbox</span><span>x${seats3.size()}</span></h6>
-                                <span class="info"><span><c:forEach items="${seats3}" var="seat">${seat.seat}&nbsp;</c:forEach></span></span>
-                                </li>
-                        </c:if> -->
+                                <h6 class="subtitle"><span>Sweetbox</span><span>x<?php echo count($seats3); ?></span></h6>
+                                <span class="info"><span><?php echo implode(', ', $seats3); ?></span></span>
+                            </li>
+                        <?php } ?>
                     </ul>
                     <ul>
-                        <!-- <%
-                            List<Ticket> listTickets = (List<Ticket>) request.getAttribute("tickets");
-                        %>
-                        <c:if test="${not empty seats1}">
+                        <?php if (count($seats1)) { ?>
                             <li>
-                                <span class="info"><span>Thường</span><span><%= String.format("%,d", listTickets.get(0).getPrice())%></span></span>
+                                <span class="info"><span>Thường</span><span><?php echo formatPrice($t[0]['price']); ?></span></span>
                             </li>
-                        </c:if>
-                        <c:if test="${not empty seats2}">
+                        <?php } ?>
+                        <?php if (count($seats2)) { ?>
                             <li>
-                                <span class="info"><span>VIP (Prime)</span><span><%= String.format("%,d", listTickets.get(1).getPrice())%></span></span>
+                                <span class="info"><span>VIP (Prime)</span><span><?php echo formatPrice($t[1]['price']); ?></span></span>
                             </li>
-                        </c:if>
-                        <c:if test="${not empty seats3}">
+                        <?php } ?>
+                        <?php if (count($seats3)) { ?>
                             <li>
-                                <span class="info"><span>Sweetbox</span><span><%= String.format("%,d", listTickets.get(2).getPrice())%></span></span>
+                                <span class="info"><span>Sweetbox</span><span><?php echo formatPrice($t[2]['price']); ?></span></span>
                             </li>
-                        </c:if>
+                        <?php } ?>
                         <li>
                             <span class="info"><span>vat 5%</span><span>(đã bao gồm)</span></span>
-                        </li> -->
+                        </li>
                     </ul>
                 </div>
                 <div class="proceed-area  text-center">
-                    <!-- <h6 class="subtitle"><span>Tổng cộng</span><span>${total_price}</span></h6> -->
-                    <a href="#0" class="custom-button back-button">Thanh toán</a>
+                    <h6 class="subtitle"><span>Tổng cộng</span><span><?php echo formatPrice($total_price); ?> Đ</span></h6>
+                    <form action="" method="POST">
+                        <button type="submit" class="custom-button back-button" name="submit">Thanh toán</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- ==========Movie-Section========== -->
-<?php
-include './footer.php'
-?>

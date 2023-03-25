@@ -1,14 +1,16 @@
 <?php
-include './header.php'
+$schedule = new Schedule();
+$s = $schedule->GetSchedule(getGET('id'));
+$film = new Film();
+$f = $film->GetFilm($s['film_id']);
 ?>
 <!-- ==========Banner-Section========== -->
 <section class="details-banner hero-area bg_img seat-plan-banner" data-background="./assets/images/banner/banner04.jpg">
     <div class="container">
         <div class="details-banner-wrapper">
             <div class="details-banner-content style-two">
-                <!-- <h3 class="title">${film.name}</h3> -->
+                <h3 class="title"><?php echo $f['name']; ?></h3>
                 <div class="tags">
-                    <!--<a href="#0">City Walk</a>-->
                     <a href="#0">Cinema 2D</a>
                 </div>
             </div>
@@ -22,22 +24,11 @@ include './header.php'
     <div class="container">
         <div class="page-title-area">
             <div class="item md-order-1">
-                <!--                <a href="movie-ticket-plan.html" class="custom-button back-button">
-                                    <i class="flaticon-double-right-arrows-angles"></i>trở về
-                                </a>-->
             </div>
             <div class="item date-item">
-                <span class="date">Thời gian chiếu: ${schedule.start_time}</span>
-                <!--                <select class="select-bar">
-                                    <option value="sc1">09:40</option>
-                                    <option value="sc2">13:45</option>
-                                    <option value="sc3">15:45</option>
-                                    <option value="sc4">19:50</option>
-                                </select>-->
+                <span class="date">Thời gian chiếu: <?php echo $s['start_time']; ?></span>
             </div>
             <div class="item">
-                <!--                <h5 class="title">05:00</h5>
-                                <p>Mins Left</p>-->
             </div>
         </div>
     </div>
@@ -55,85 +46,94 @@ include './header.php'
             <h5 class="subtitle">Thường</h5>
             <div class="screen-wrapper">
                 <ul class="seat-area">
-                    <!-- <%
-                        for (char i = 'A'; i <= 'D'; i++) {
-                    %> -->
-                    <li class="seat-line">
-                        <!-- <span><%= i%></span> -->
-                        <ul class="seat--area">
-                            <!-- <%
-                                int index = 1;
-                                for (int j = 1; j <= 3; j++) {
-                            %> -->
-                            <li class="front-seat">
-                                <ul>
-                                    <!-- <%
-                                        for (int k = 1; k <= 8; k++) {
-                                            if ((j == 1 || j == 3) && k == 3) {
-                                                break;
+                    <?php
+                    $ticket = new Ticket();
+                    $t = $ticket->GetTickets();
+                    $booking = new Booking();
+                    $listBookingDetails = [];
+                    foreach ($booking->GetBookingDetailsByScheduleId($s['id']) as $k => $v) {
+                        $listBookingDetails[$v['seat']] = $v['seat'];
+                    }
+                    for ($i = 'A'; $i <= 'D'; $i++) {
+                    ?>
+                        <li class="seat-line">
+                            <span><?php echo $i; ?></span>
+                            <ul class="seat--area">
+                                <?php
+                                $index = 1;
+                                for ($j = 1; $j <= 3; $j++) {
+                                ?>
+                                    <li class="front-seat">
+                                        <ul>
+                                            <?php
+                                            for ($k = 1; $k <= 8; $k++) {
+                                                if (($j == 1 || $j == 3) && $k == 3) {
+                                                    break;
+                                                }
+                                                $code_seat = bindec(base_convert(unpack('H*', $i)[1], 16, 2) . dec2bin($index));
+                                                $seat_free = empty($listBookingDetails[$i . $index]) ? true : false;
+                                            ?>
+                                                <li class="single-seat <?php echo $seat_free ? "seat-free" : ""; ?>" data-price="<?php echo $t[0]['price']; ?>" data-code-seat="<?php echo $code_seat; ?>">
+                                                    <img src="assets/images/movie/seat01<?php echo $seat_free ? "-free" : "" ?>.png" alt="seat" />
+                                                    <span class="sit-num"><?php echo $i; ?><?php echo $index++; ?></span>
+                                                </li>
+                                            <?php
                                             }
-                                            String code_seat = Integer.toBinaryString((int) i) + Utils.IntToBin(index);
-                                    %>
-                                    <li class="single-seat seat-free" data-price="${tickets[0].price}" data-code-seat="<%= Utils.BinToDec(code_seat)%>">
-                                        <img src="./assets/images/movie/seat01-free.png" alt="seat" />
-                                        <span class="sit-num"><%= i%><%= index++%></span>
-                                    </li> -->
-                                    <!-- <%
-                                        }
-                                    %> -->
-                                </ul>
-                            </li>
-                            <!-- <%
+                                            ?>
+                                        </ul>
+                                    </li>
+                                <?php
                                 }
-                            %> -->
-                        </ul>
-                        <!-- <span><%= i%></span> -->
-                    </li>
-                    <!-- <%
-                        }
-                    %> -->
+                                ?>
+                            </ul>
+                            <span><?php echo $i; ?></span>
+                        </li>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </div>
             <h5 class="subtitle">VIP (Prime)</h5>
             <div class="screen-wrapper">
                 <ul class="seat-area">
-                    <!-- <%
-                        for (char i = 'E'; i <= 'H'; i++) {
-                    %> -->
-                    <li class="seat-line">
-                        <!-- <span><%= i%></span> -->
-                        <ul class="seat--area">
-                            <!-- <%
-                                int index = 1;
-                                for (int j = 1; j <= 3; j++) {
-                            %> -->
-                            <li class="front-seat">
-                                <ul>
-                                    <!-- <%
-                                        for (int k = 1; k <= 8; k++) {
-                                            if ((j == 1 || j == 3) && k == 3) {
-                                                break;
+                    <?php
+                    for ($i = 'E'; $i <= 'H'; $i++) {
+                    ?>
+                        <li class="seat-line">
+                            <span><?php echo $i; ?></span>
+                            <ul class="seat--area">
+                                <?php
+                                $index = 1;
+                                for ($j = 1; $j <= 3; $j++) {
+                                ?>
+                                    <li class="front-seat">
+                                        <ul>
+                                            <?php
+                                            for ($k = 1; $k <= 8; $k++) {
+                                                if (($j == 1 || $j == 3) && $k == 3) {
+                                                    break;
+                                                }
+                                                $code_seat = bindec(base_convert(unpack('H*', $i)[1], 16, 2) . dec2bin($index));
+                                                $seat_free = empty($listBookingDetails[$i . $index]) ? true : false;
+                                            ?>
+                                                <li class="single-seat <?php echo $seat_free ? "seat-free" : ""; ?>" data-price="<?php echo $t[1]['price']; ?>" data-code-seat="<?php echo $code_seat; ?>">
+                                                    <img src="assets/images/movie/seat01<?php echo $seat_free ? "-free" : "" ?>.png" alt="seat" />
+                                                    <span class="sit-num"><?php echo $i; ?><?php echo $index++; ?></span>
+                                                </li>
+                                            <?php
                                             }
-                                            String code_seat = Integer.toBinaryString((int) i) + Utils.IntToBin(index);
-                                    %>
-                                    <li class="single-seat seat-free" data-price="${tickets[1].price}" data-code-seat="<%= Utils.BinToDec(code_seat)%>">
-                                        <img src="./assets/images/movie/seat01-free.png" alt="seat" />
-                                        <span class="sit-num"><%= i%><%= index++%></span>
+                                            ?>
+                                        </ul>
                                     </li>
-                                    <%
-                                        }
-                                    %> -->
-                                </ul>
-                            </li>
-                            <!-- <%
+                                <?php
                                 }
-                            %> -->
-                        </ul>
-                        <!-- <span><%= i%></span> -->
-                    </li>
-                    <!-- <%
-                        }
-                    %> -->
+                                ?>
+                            </ul>
+                            <span><?php echo $i; ?></span>
+                        </li>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </div>
             <h5 class="subtitle">Sweetbox</h5>
@@ -142,31 +142,32 @@ include './header.php'
                     <li class="seat-line">
                         <span>J</span>
                         <ul class="seat--area">
-                            <!-- <%
-                                int index = 1;
-                                for (int j = 1; j <= 3; j++) {
-                            %> -->
-                            <li class="front-seat">
-                                <ul>
-                                    <!-- <%
-                                        for (int k = 1; k <= 4; k++) {
-                                            if ((j == 1 || j == 3) && k == 2) {
+                            <?php
+                            $index = 1;
+                            for ($j = 1; $j <= 3; $j++) {
+                            ?>
+                                <li class="front-seat">
+                                    <ul>
+                                        <?php
+                                        for ($k = 1; $k <= 4; $k++) {
+                                            if (($j == 1 || $j == 3) && $k == 2) {
                                                 break;
                                             }
-                                            String code_seat = Integer.toBinaryString((int) 'J') + Utils.IntToBin(index);
-                                    %>
-                                    <li class="single-seat seat-free-two" data-price="${tickets[2].price}" data-code-seat="<%= Utils.BinToDec(code_seat)%>">
-                                        <img src="./assets/images/movie/seat02-free.png" alt="seat" />
-                                        <span class="sit-num">J<%= index++%> J<%= index++%></span>
-                                    </li> -->
-                                    <!-- <%
+                                            $code_seat = bindec(base_convert(unpack('H*', 'J')[1], 16, 2) . dec2bin($index));
+                                            $seat_free = empty($listBookingDetails["J" . $index . " J" . ($index + 1)]) ? true : false;
+                                        ?>
+                                            <li class="single-seat <?php echo $seat_free ? "seat-free-two" : ""; ?>" data-price="<?php echo $t[2]['price']; ?>" data-code-seat="<?php echo $code_seat; ?>">
+                                                <img src="./assets/images/movie/seat02<?php echo $seat_free ? "-free" : ""; ?>.png" alt="seat" />
+                                                <span class="sit-num">J<?php echo $index++; ?> J<?php echo $index++; ?></span>
+                                            </li>
+                                        <?php
                                         }
-                                    %> -->
-                                </ul>
-                            </li>
-                            <!-- <%
-                                }
-                            %> -->
+                                        ?>
+                                    </ul>
+                                </li>
+                            <?php
+                            }
+                            ?>
                         </ul>
                         <span>J</span>
                     </li>
@@ -184,13 +185,10 @@ include './header.php'
                     <h3 class="title" id="price">0 đ</h3>
                 </div>
                 <div class="book-item">
-                    <!-- <a href="javascript:" onclick="redirectPurchase(${schedule.id})" class="custom-button">Thanh toán</a> -->
+                    <a href="javascript:" onclick="redirectPurchase(<?php echo $s['id']; ?>)" class="custom-button">Thanh toán</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- ==========Movie-Section========== -->
-<?php
-include './footer.php'
-?>

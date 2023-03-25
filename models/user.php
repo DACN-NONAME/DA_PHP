@@ -1,7 +1,7 @@
 <?php
 class User extends DB
 {
-    function getUserByID($user_id)
+    function GetUserByID($user_id)
     {
         $user_id = mysqli_escape_string($this->conn, $user_id);
         $query = mysqli_query($this->conn, 'SELECT * FROM user WHERE id = ' . $user_id);
@@ -12,10 +12,10 @@ class User extends DB
         return null;
     }
 
-    function getUserByEmail($email)
+    function GetUserByEmail($email)
     {
         $email = mysqli_escape_string($this->conn, $email);
-        $query = mysqli_query($this->conn, 'SELECT * FROM user WHERE email = ' . $email);
+        $query = mysqli_query($this->conn, 'SELECT * FROM user WHERE email = "' . $email . '"');
         $row = mysqli_fetch_assoc($query);
         if ($row) {
             return $row;
@@ -40,7 +40,7 @@ class User extends DB
     {
         $full_name = mysqli_escape_string($this->conn, $full_name);
         $email = mysqli_escape_string($this->conn, $email);
-        $password = md5($password);
+        $password = sha1($password);
         $phone = mysqli_escape_string($this->conn, $phone);
         $address = mysqli_escape_string($this->conn, $address);
         if ($this->getUserByEmail($email)) return false;
@@ -48,5 +48,21 @@ class User extends DB
         $query = mysqli_query($this->conn, 'INSERT INTO user(full_name, email, password, phone, address) VALUES("' . $full_name . '", "' . $email . '", "' . $password . '", "' . $phone . '",, "' . $address . '")');
         if ($query) return mysqli_insert_id($this->conn);
         return false;
+    }
+
+    function UpdateProfile($user_id, $full_name, $phone, $address)
+    {
+        $user_id = mysqli_escape_string($this->conn, $user_id);
+        $full_name = mysqli_escape_string($this->conn, $full_name);
+        $phone = mysqli_escape_string($this->conn, $phone);
+        $address = mysqli_escape_string($this->conn, $address);
+        return mysqli_query($this->conn, 'UPDATE user SET full_name = "' . $full_name . '", phone = "' . $phone . '", address = "' . $address . '" WHERE id = ' . $user_id);
+    }
+
+    function UpdatePassword($user_id, $password)
+    {
+        $user_id = mysqli_escape_string($this->conn, $user_id);
+        $password = sha1($password);
+        return mysqli_query($this->conn, 'UPDATE user SET password = "' . $password . '" WHERE id = ' . $user_id);
     }
 }

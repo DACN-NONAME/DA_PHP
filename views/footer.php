@@ -4,7 +4,7 @@
         <div class="footer-top">
             <div class="logo">
                 <a href="index-1.html">
-                    <img src="./assets/images/footer/footer-logo.png" alt="footer">
+                    <img src="assets/images/footer/footer-logo.png" alt="footer" />
                 </a>
             </div>
             <ul class="social-icons">
@@ -38,7 +38,7 @@
         <div class="footer-bottom">
             <div class="footer-bottom-area">
                 <div class="left">
-                    <p>Copyright � 2022. All Rights Reserved By <a href="#0">Boleto </a></p>
+                    <p>Copyright &copy; 2023. All Rights Reserved By <a href="#0">NoName</a></p>
                 </div>
                 <ul class="links">
                     <li>
@@ -90,7 +90,7 @@
     }
 
     function pagination(num) {
-        redirectParams('page', num);
+        redirectParams('p', num);
     }
 
     function numberWithDot(x) {
@@ -114,11 +114,11 @@
     }
 
     function redirectScheduleId() {
-        window.location.href = './seats?id=' + schedule_id;
+        window.location.href = 'seats.html?id=' + schedule_id;
     }
 
     function redirectPurchase(sid) {
-        window.location.href = './purchase?schedule_id=' + sid + 'seats=' + $('#code-seat').text().trim(',');
+        window.location.href = 'purchase.html?schedule_id=' + sid + '&seats=' + $('#code-seat').text().trim(',');
     }
 </script>
 </body>

@@ -1,6 +1,18 @@
 <?php
 class User extends DB
 {
+    function GetUsers()
+    {
+        $a = mysqli_query($this->conn, 'SELECT * FROM user ORDER BY id DESC');
+        $b = array();
+        if (mysqli_num_rows($a))
+            while ($row = mysqli_fetch_assoc($a)) {
+                $b = array_merge($b, array($row));
+            }
+        mysqli_free_result($a);
+        return $b;
+    }
+
     function GetUserByID($user_id)
     {
         $user_id = mysqli_escape_string($this->conn, $user_id);
@@ -64,5 +76,12 @@ class User extends DB
         $user_id = mysqli_escape_string($this->conn, $user_id);
         $password = sha1($password);
         return mysqli_query($this->conn, 'UPDATE user SET password = "' . $password . '" WHERE id = ' . $user_id);
+    }
+
+    function GetCountUsers()
+    {
+        $total = mysqli_query($this->conn, 'SELECT COUNT(id) AS total FROM user');
+        $total = mysqli_fetch_assoc($total)['total'];
+        return $total;
     }
 }

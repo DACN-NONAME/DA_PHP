@@ -89,6 +89,10 @@ if ($b) {
                 <h6 class="subtitle"><span><?php echo $s['cinema_name']; ?></span><span><?php echo $s['room_name']; ?></span></h6>
                 <div class="info"><span><?php echo $s['start_time']; ?></span> <span>Rạp</span></div>
               </li>
+              <li>
+                <h6 class="subtitle">Ngày đặt vé</h6>
+                <div class="info"><span><?php echo explode(' ', $b['created_at'])[0]; ?></span></div>
+              </li>
             </ul>
             <ul class="side-shape">
               <?php if (count($seats1)) { ?>

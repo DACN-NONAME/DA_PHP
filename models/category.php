@@ -37,4 +37,29 @@ class Category extends DB
     mysqli_free_result($a);
     return $b;
   }
+
+  function InsertCategory($name)
+  {
+    $name = mysqli_escape_string($this->conn, $name);
+    $query = mysqli_query($this->conn, 'INSERT INTO category(name) VALUES("' . $name . '")');
+    if ($query) return true;
+    return false;
+  }
+
+  function UpdateCategory($id, $name)
+  {
+    $id = mysqli_escape_string($this->conn, $id);
+    $name = mysqli_escape_string($this->conn, $name);
+    $query = mysqli_query($this->conn, 'UPDATE category SET name = "' . $name . '" WHERE id = ' . $id);
+    if ($query) return true;
+    return false;
+  }
+
+  function DeleteCategory($id)
+  {
+    $id = mysqli_escape_string($this->conn, $id);
+    $query = mysqli_query($this->conn, 'DELETE FROM category WHERE id = ' . $id);
+    if ($query) return true;
+    return false;
+  }
 }

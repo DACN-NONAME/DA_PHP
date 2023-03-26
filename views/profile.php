@@ -4,10 +4,10 @@ $msg = '';
 $user = new User();
 $u = $user->GetUserByID($_SESSION['user_id']);
 
-if ($_POST['update-profile']) {
+if (!empty($_POST['update-profile'])) {
     $user->UpdateProfile($_SESSION['user_id'], getPOST('full_name'), getPOST('phone'), getPOST('address'));
     $u = $user->GetUserByID($_SESSION['user_id']);
-} else if ($_POST['change-pass']) {
+} else if (!empty($_POST['change-pass'])) {
     if (getPOST('password2') == getPOST('repassword2')) {
         if ($u['password'] == sha1(getPOST('password2')))
             if ($user->UpdatePassword($_SESSION['user_id'], getPOST('password2')))
@@ -16,6 +16,8 @@ if ($_POST['update-profile']) {
         else $msg = 'Mật khẩu cũ không chính xác!';
     } else $msg = 'Mật khẩu nhập lại không trùng khớp!';
 }
+
+$booking = new Booking();
 ?>
 <!-- ==========Banner-Section========== -->
 <section class="main-page-header speaker-banner bg_img" data-background="./assets/images/banner/banner07.jpg">
@@ -100,7 +102,7 @@ if ($_POST['update-profile']) {
                     </div>
                     <div class="contact-counter-content">
                         <div class="counter-item">
-                            <h5 class="title odometer" data-odometer-final="${count_bookings}">0</h5>
+                            <h5 class="title odometer" data-odometer-final="<?php echo $booking->GetCountBookingsByUserId($_SESSION['user_id']); ?>">0</h5>
                             <!--<h5 class="title">k</h5>-->
                         </div>
                         <p>Số lần đã đặt</p>

@@ -7,12 +7,14 @@ if ($_POST) {
     $result = $user->login($_POST['email'], $_POST['password']);
     if ($result) {
         $_SESSION['user_id'] = $result['id'];
-        header('Location: index.html');
+        if (getGET('url'))
+            header('Location: ' . getGET('url'));
+        else
+            header('Location: index.html');
     } else {
         $msg = 'Đăng nhập thất bại, vui lòng thử lại!';
     }
 }
-
 ?>
 
 <html lang="vi">

@@ -38,4 +38,30 @@ class Schedule extends DB
     mysqli_free_result($a);
     return $b;
   }
+
+  function InsertSchedule($film_id, $cinema_id, $room_id, $start_time)
+  {
+    $stmt = mysqli_prepare($this->conn, 'INSERT INTO schedule (film_id, cinema_id, room_id, start_time) VALUES (?, ?, ?, ?)');
+    $stmt->bind_param('iiis', $film_id, $cinema_id, $room_id, $start_time);
+    $a = $stmt->execute();
+    $stmt->close();
+    return $a;
+  }
+
+  function UpdateSchedule($id, $film_id, $cinema_id, $room_id, $start_time)
+  {
+    $stmt = mysqli_prepare($this->conn, 'UPDATE schedule SET film_id = ?, cinema_id = ?, room_id = ?, start_time = ? WHERE id = ?');
+    $stmt->bind_param('iiisi', $film_id, $cinema_id, $room_id, $start_time, $id);
+    $a = $stmt->execute();
+    $stmt->close();
+    return $a;
+  }
+
+  function DeleteSchedule($id)
+  {
+    $id = mysqli_escape_string($this->conn, $id);
+    $query = mysqli_query($this->conn, 'DELETE FROM schedule WHERE id = ' . $id);
+    if ($query) return true;
+    return false;
+  }
 }

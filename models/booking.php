@@ -87,7 +87,7 @@ class Booking extends DB
       $seats = explode(',', $seats);
       foreach ($seats as $k => $v) {
         $row = $col = '';
-        $bin = decbin(trim($v));
+        $bin = decbin((int)trim($v));
         for ($i = 0; $i < strlen($bin); $i++) {
           if ($i < 7) $row .= $bin[$i];
           else $col .= $bin[$i];

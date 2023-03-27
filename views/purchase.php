@@ -28,7 +28,7 @@ $seats1 = $seats2 = $seats3 = array();
 $total_price = 0;
 foreach ($seats as $k => $v) {
     $row = $col = '';
-    $bin = decbin(trim($v));
+    $bin = decbin((int)trim($v));
     for ($i = 0; $i < strlen($bin); $i++) {
         if ($i < 7) $row .= $bin[$i];
         else $col .= $bin[$i];

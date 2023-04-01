@@ -88,10 +88,10 @@ if ($_POST) {
                   <select class="js-example-basic-multiple" id="category" multiple="multiple" name="categories_s[]" required>
                     <?php
                     $category = new Category;
-                    $listCategoriesSelected =  $category->GetCategoriesByFilmId(getGET('id'));
+                    $listCategoriesSelected = getGET('id') ? $category->GetCategoriesByFilmId(getGET('id')) : [];
                     foreach ($category->GetCategories() as $k => $v) {
                       $selected = false;
-                      foreach ($category->GetCategoriesByFilmId(getGET('id')) as $k2 => $v2) {
+                      foreach ($listCategoriesSelected as $k2 => $v2) {
                         if ($v['id'] == $v2['id']) {
                           $selected = true;
                           unset($listCategoriesSelected[$k2]);

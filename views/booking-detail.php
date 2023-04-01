@@ -76,6 +76,11 @@ if ($b) {
               </div>
             </form>
           </div>
+          <div class="checkout-widget checkout-card mb-0">
+            <h5 class="title">Mã QR soát vé</h5>
+            <br />
+            <img src='https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=<?php echo $b['id']; ?>&choe=UTF-8' />
+          </div>
         </div>
         <div class="col-lg-4">
           <div class="booking-summery bg-one">

@@ -6,12 +6,13 @@ if ($_POST) {
     if (getPOST('password') == getPOST('password2')) {
         $user = new User();
         $result = $user->register($_POST['full_name'], $_POST['email'], $_POST['password'], $_POST['phone'], '');
-        if ($result) {
+        // var_dump($result);
+        if ($result !== false) {
             header('Location: sign-in.html');
         } else {
             $msg = 'Đăng ký thất bại, vui lòng thử lại!';
         }
-    } else $msg = '';
+    } else $msg = 'Mật khẩu nhập lại không khớp!';
 }
 
 ?>
@@ -64,11 +65,9 @@ if ($_POST) {
                         <h2 class="title">to Boleto</h2>
                     </div>
                     <form class="account-form" action="" method="POST">
-                        <c:if test="${not empty msg}">
-                            <div class="form-group">
-                                <p>${msg}</p>
-                            </div>
-                        </c:if>
+                        <div class="form-group">
+                            <p><?php echo $msg; ?></p>
+                        </div>
                         <div class="form-group">
                             <label for="full_name">Họ tên <span>*</span></label>
                             <input type="text" placeholder="Full name" id="full_name" name="full_name" required />
@@ -94,7 +93,7 @@ if ($_POST) {
                             <label for="bal">Tôi đồng ý với <a href="#0">Điều khoản, Chính sách riêng tư</a> và <a href="#0">Phụ phí</a></label>
                         </div>
                         <div class="form-group text-center">
-                            <input type="submit" value="Đăng Ký">
+                            <input type="submit" value="Đăng Ký" />
                         </div>
                     </form>
                     <div class="option">Đã có tài khoản? <a href="sign-in.html">Đăng nhập</a></div>

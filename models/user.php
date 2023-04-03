@@ -57,7 +57,7 @@ class User extends DB
         $address = mysqli_escape_string($this->conn, $address);
         if ($this->getUserByEmail($email)) return false;
 
-        $query = mysqli_query($this->conn, 'INSERT INTO user(full_name, email, password, phone, address) VALUES("' . $full_name . '", "' . $email . '", "' . $password . '", "' . $phone . '",, "' . $address . '")');
+        $query = mysqli_query($this->conn, 'INSERT INTO user(full_name, email, password, phone, address) VALUES("' . $full_name . '", "' . $email . '", "' . $password . '", "' . $phone . '", "' . $address . '")');
         if ($query) return mysqli_insert_id($this->conn);
         return false;
     }
